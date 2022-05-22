@@ -78,6 +78,12 @@ public class Shoot : MonoBehaviour
 
         if(Physics.Raycast(ray, out hit, shootRange, shootLayer))
         {
+            EnemyDie enemy = hit.transform.GetComponent<EnemyDie>();
+            if (enemy != null)
+            {
+                enemy.die();
+            }
+
             if(hit.rigidbody)
             {
                 hit.rigidbody.AddForceAtPosition(shootForce * transform.forward, hit.point);
