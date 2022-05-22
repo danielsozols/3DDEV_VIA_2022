@@ -9,13 +9,10 @@ public class Shoot : MonoBehaviour
     public static Shoot singleton;
     Animator anim;
 
-    [Header("GAMEOBJECT THAT HAS FIRSTPERSON CONTROLLER SCRIPT ATTACHED")]
-    [SerializeField] FirstPersonController firstPersonController;
+    public FirstPersonController firstPersonController;
 
-    [Header("THE POSITION THE RAY CASTS FROM")]
-    [SerializeField] Transform rayPoint;
+    public Transform rayPoint;
 
-    [Header("SHOOT")]
     public float shootForce = 100f;
     public float shootRange = 50f;
     public LayerMask shootLayer;
@@ -23,13 +20,11 @@ public class Shoot : MonoBehaviour
     private float _shootTimer;
     private string tagName;
 
-    [Header("SHOOT IMPACT EFFECTS")]
     public GameObject defaultEffect;
     public GameObject bloodEffect;
     public GameObject flashEffect;
     public GameObject shockEffect;
 
-    [Header("AUDIO")]
     public AudioSource foleyAS;
     public AudioClip shootAC;
     public AudioSource impactSoundsAS;
@@ -100,10 +95,10 @@ public class Shoot : MonoBehaviour
                     decal = Instantiate(bloodEffect, hit.point, Quaternion.FromToRotation(-Vector3.forward, hit.point)) as GameObject;
                     shock = Instantiate(shockEffect, hit.point, Quaternion.FromToRotation(-Vector3.forward, hit.point)) as GameObject;
                     decal.transform.parent = hit.transform;
-                    shock.transform.parent = hit.transform;
+                    //shock.transform.parent = hit.transform;
                     impactSoundsAS.clip = gunBloodImpactAC;
                     impactSoundsAS.pitch = Random.Range(0.9f, 1f);
-                    impactSoundsAS.volume = Random.Range(0.1f, 0.2f);
+                    impactSoundsAS.volume = Random.Range(0.2f, 0.3f);
                     impactSoundsAS.Play();
                     tagName = "";
                     break;
@@ -114,7 +109,7 @@ public class Shoot : MonoBehaviour
                     shock.transform.parent = hit.transform;
                     impactSoundsAS.clip = gunDefaultImpactAC;
                     impactSoundsAS.pitch = Random.Range(0.9f, 1f);
-                    impactSoundsAS.volume = Random.Range(0.1f, 0.2f);
+                    impactSoundsAS.volume = Random.Range(0.2f, 0.3f);
                     impactSoundsAS.Play();
                     tagName = "";
                     break;

@@ -678,7 +678,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1090439461}
   m_Layer: 6
-  m_Name: RayPointGlob
+  m_Name: RayPointGlobFireBall
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,12 +692,42 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090439460}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.77, z: 0.7}
+  m_LocalPosition: {x: 0, y: 1.25, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1349379959}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1203193995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1203193996}
+  m_Layer: 6
+  m_Name: RayPointGlobSpawn
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1203193996
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203193995}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1349379959}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &1298778209 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 11400000, guid: 5e9e851c0e142814dac026a256ba2ac0,
@@ -812,7 +842,8 @@ MonoBehaviour:
   player: {fileID: 374609251}
   enemy: {fileID: 1349379956}
   projectile: {fileID: 2022104421}
-  rayPoint: {fileID: 1090439461}
+  fireBallRayPoint: {fileID: 1090439461}
+  spawnRayPoint: {fileID: 1203193996}
   isGround:
     serializedVersion: 2
     m_Bits: 1
@@ -820,9 +851,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   killTime: 2
-  timeBetweenAttacks: 2
+  timeBetweenAttacks: 1.9
   sightDistance: 20
   attackDistance: 10
+  fireEffect: {fileID: 1947871717301538, guid: a990e3ac1318b834488c784d851f42a9, type: 3}
+  globExplodeEffect: {fileID: 8745408161557561014, guid: 2efc9df2f535a44409bc301c96f90590,
+    type: 3}
+  goopEffect: {fileID: 1000010675638318, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c, type: 3}
+  newEnemy: {fileID: 1349379956}
 --- !u!850595691 &1542463984
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1943,7 +1979,7 @@ GameObject:
   - component: {fileID: 2022104423}
   - component: {fileID: 2022104422}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Projectile
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1986,7 +2022,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022104421}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1998,7 +2034,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: -2413263397522563931, guid: 27ee064c8d619294fa9c0b3c2e01b190, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2275,10 +2311,10 @@ MonoBehaviour:
   shockEffect: {fileID: 1329845292236604, guid: 9bba9cf244c53c5439505dfc96fdd11c,
     type: 3}
   foleyAS: {fileID: 2049075336}
-  shootAC: {fileID: 8300000, guid: 08f78eba48bb21c44ac5a74ca84efc83, type: 3}
+  shootAC: {fileID: 8300000, guid: 159aa6b3153429349b06479ba4bcb8fc, type: 3}
   impactSoundsAS: {fileID: 2049075335}
   gunDefaultImpactAC: {fileID: 8300000, guid: bb6cdd13aeb95f743847b1cd460889bc, type: 3}
-  gunBloodImpactAC: {fileID: 8300000, guid: bb6cdd13aeb95f743847b1cd460889bc, type: 3}
+  gunBloodImpactAC: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
 --- !u!95 &2049075338
 Animator:
   serializedVersion: 3
