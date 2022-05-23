@@ -13,8 +13,8 @@ public class EnemyAI : MonoBehaviour
     public Transform fireBallRayPoint;
     public Transform spawnRayPoint;
     public LayerMask isGround, isPlayer;
-    public int killTime;
     public float timeBetweenAttacks;
+    public float killTime;
     bool alreadyAttacked;
     bool isDead = false;
     public float sightDistance, attackDistance;
@@ -22,7 +22,6 @@ public class EnemyAI : MonoBehaviour
     public GameObject fireEffect;
     GameObject globExplode;
     public GameObject globExplodeEffect;
-    float randomForce;
     GameObject goop;
     public GameObject goopEffect;
     GameObject spawnPoint;
@@ -41,16 +40,19 @@ public class EnemyAI : MonoBehaviour
 
         if(distance > sightDistance && !isDead)
         {
+            GetComponent<Animator>().enabled = true;
             anim.SetBool("isWalking", false);
             agent.SetDestination(transform.position);
         }
         else if(distance > attackDistance && !isDead)
         {
+            GetComponent<Animator>().enabled = true;
             anim.SetBool("isWalking", true);
             agent.SetDestination(player.position);
         }
         else if (!isDead)
         {
+            GetComponent<Animator>().enabled = true;
             anim.SetBool("isWalking", false);
             agent.SetDestination(transform.position);
             Vector3 playerPosition = new Vector3 (player.transform.position.x, transform.position.y, player.transform.position.z);
@@ -79,31 +81,39 @@ public class EnemyAI : MonoBehaviour
 
     public void dead()
     {
-        //Destroy(enemy, killTime);
-        // OR this.enemy.SetActive(false);
         globExplode = Instantiate(globExplodeEffect, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)) as GameObject;
+        Destroy(globExplode, killTime);
+        Destroy(enemy, killTime);
+        // OR MAYBE this.enemy.SetActive(false);
         isDead = true;
         agent.SetDestination(transform.position);
         anim.SetBool("isWalking", false);
         GetComponent<Animator>().enabled = false;
         StartCoroutine(SpawnCountdown());
-        // Invoke(nameof(deploySpawns), (timeBetweenAttacks));
     }
 
     IEnumerator SpawnCountdown()
     {
         yield return new WaitForSeconds(2);
-        randomForce = Random.Range(10f, 11f);
+        float randomForce = Random.Range(8f, 12f);
+
         Rigidbody seed = Instantiate(projectile, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)).GetComponent<Rigidbody>();
-        seed.AddForce(transform.forward * randomForce, ForceMode.Impulse);
+        seed.AddForce(0, 0, randomForce, ForceMode.Impulse);
         seed.AddForce(transform.up * randomForce, ForceMode.Impulse);
         goop = Instantiate(goopEffect, seed.transform.position, Quaternion.FromToRotation(Vector3.forward, seed.transform.position)) as GameObject;
         goop.transform.parent = seed.transform;
-        //Invoke(nameof(spawnEnemy), (timeBetweenAttacks));
-        //StartCoroutine(SpawnCountdown());
+
+        Rigidbody seed2 = Instantiate(projectile, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)).GetComponent<Rigidbody>();
+        seed2.AddForce(randomForce, 0, 0, ForceMode.Impulse);
+        seed2.AddForce(transform.up * randomForce, ForceMode.Impulse);
+        goop = Instantiate(goopEffect, seed2.transform.position, Quaternion.FromToRotation(Vector3.forward, seed2.transform.position)) as GameObject;
+        goop.transform.parent = seed2.transform;
+
         yield return new WaitForSeconds(2);
         spawnPoint = Instantiate(newEnemy, seed.transform.position, Quaternion.FromToRotation(Vector3.forward, seed.transform.position)) as GameObject;
-        //Destroy(seed.gameObject, timeBetweenAttacks);
+        Destroy(seed.gameObject, killTime);
+        spawnPoint = Instantiate(newEnemy, seed2.transform.position, Quaternion.FromToRotation(Vector3.forward, seed2.transform.position)) as GameObject;
+        Destroy(seed2.gameObject, killTime);
     }
 
 }

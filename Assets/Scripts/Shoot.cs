@@ -27,9 +27,14 @@ public class Shoot : MonoBehaviour
 
     public AudioSource foleyAS;
     public AudioClip shootAC;
+    public AudioClip reloadAC;
+    public AudioClip emptyAC;
     public AudioSource impactSoundsAS;
     public AudioClip gunDefaultImpactAC;
     public AudioClip gunBloodImpactAC;
+
+    public int currentAmmo = 10;
+    public bool isReloading;
     
     void Awake()
     {
@@ -41,9 +46,47 @@ public class Shoot : MonoBehaviour
     {
         _shootTimer -= Time.deltaTime;
 
-        if(Input.GetButton("Fire1"))
+        if(Input.GetButton("Fire1") && currentAmmo > 0 && !isReloading)
         {
             ArmedInput();
+        }
+        else if(Input.GetKeyDown(KeyCode.R) && currentAmmo >= 0 && currentAmmo != 10 && !isReloading)
+        {
+            Reload();
+            foleyAS.clip = reloadAC;
+            foleyAS.pitch = Random.Range(0.9f, 1f);
+            foleyAS.volume = Random.Range(0.7f, 0.8f);
+            foleyAS.Play();
+        }
+        else if(Input.GetButton("Fire1") && currentAmmo <= 0 && !isReloading && _shootTimer <= 0)
+        {
+            foleyAS.clip = emptyAC;
+            foleyAS.pitch = Random.Range(0.9f, 1f);
+            foleyAS.volume = Random.Range(0.7f, 0.8f);
+            foleyAS.Play();
+            _shootTimer = shootTimer;
+        }
+    }
+
+    public void Reload()
+    {
+        anim.SetTrigger("Reload");
+        StartCoroutine(ReloadCountdown(2f));
+    }
+
+    IEnumerator ReloadCountdown(float timer)
+    {
+        while(timer > 0f)
+        {
+            isReloading = true;
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+
+        if(timer <= 0f)
+        {
+            isReloading = false;
+            currentAmmo = 10;
         }
     }
 
@@ -60,6 +103,8 @@ public class Shoot : MonoBehaviour
             foleyAS.Play();
             flash = Instantiate(flashEffect, rayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, rayPoint.transform.position)) as GameObject;
             flash.transform.parent = rayPoint.transform;
+            Destroy(flash, shootTimer);
+            currentAmmo--;
             anim.SetTrigger("Shoot");
             ShootAttack();
         }
@@ -94,22 +139,26 @@ public class Shoot : MonoBehaviour
                 case "Enemy":
                     decal = Instantiate(bloodEffect, hit.point, Quaternion.FromToRotation(-Vector3.forward, hit.point)) as GameObject;
                     shock = Instantiate(shockEffect, hit.point, Quaternion.FromToRotation(-Vector3.forward, hit.point)) as GameObject;
+                    Destroy(decal, shootTimer * 2);
+                    Destroy(shock, shootTimer * 2);
                     decal.transform.parent = hit.transform;
                     //shock.transform.parent = hit.transform;
                     impactSoundsAS.clip = gunBloodImpactAC;
                     impactSoundsAS.pitch = Random.Range(0.9f, 1f);
-                    impactSoundsAS.volume = Random.Range(0.2f, 0.3f);
+                    impactSoundsAS.volume = Random.Range(0.3f, 0.4f);
                     impactSoundsAS.Play();
                     tagName = "";
                     break;
                 case "Untagged":
                     decal = Instantiate(defaultEffect, hit.point, Quaternion.FromToRotation(-Vector3.forward, hit.point)) as GameObject;
                     shock = Instantiate(shockEffect, hit.point, Quaternion.FromToRotation(-Vector3.forward, hit.point)) as GameObject;
+                    Destroy(decal, shootTimer * 2);
+                    Destroy(shock, shootTimer * 2);
                     decal.transform.parent = hit.transform;
                     shock.transform.parent = hit.transform;
                     impactSoundsAS.clip = gunDefaultImpactAC;
                     impactSoundsAS.pitch = Random.Range(0.9f, 1f);
-                    impactSoundsAS.volume = Random.Range(0.2f, 0.3f);
+                    impactSoundsAS.volume = Random.Range(0.1f, 0.2f);
                     impactSoundsAS.Play();
                     tagName = "";
                     break;
