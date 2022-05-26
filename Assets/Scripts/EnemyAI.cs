@@ -6,6 +6,10 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     Animator anim;
+
+    public AudioSource enemyAS;
+    public AudioClip projectileAC;
+
     public NavMeshAgent agent;
     public Transform player; 
     public GameObject enemy;
@@ -13,11 +17,13 @@ public class EnemyAI : MonoBehaviour
     public Transform fireBallRayPoint;
     public Transform spawnRayPoint;
     public LayerMask isGround, isPlayer;
+
     public float timeBetweenAttacks;
     public float killTime;
+    public float sightDistance, attackDistance;
     bool alreadyAttacked;
     bool isDead = false;
-    public float sightDistance, attackDistance;
+
     GameObject fire;
     public GameObject fireEffect;
     GameObject globExplode;
@@ -61,25 +67,30 @@ public class EnemyAI : MonoBehaviour
 
             if (!alreadyAttacked)
             {
+                enemyAS.clip = projectileAC;
+                enemyAS.pitch = Random.Range(1f, 2f);
+                enemyAS.volume = Random.Range(0.3f, 0.4f);
+                enemyAS.Play();
                 Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
-                ball.AddForce(transform.forward * 10f, ForceMode.Impulse);
-                ball.AddForce(transform.up * 2f, ForceMode.Impulse);
+                ball.tag = "EnemyProjectile";
+                ball.AddForce(transform.forward * 30f, ForceMode.Impulse);
+                ball.AddForce(transform.up * 1f, ForceMode.Impulse);
                 fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
                 fire.transform.parent = ball.transform;
                 Destroy(ball.gameObject, timeBetweenAttacks);
 
                 alreadyAttacked = true;
-                Invoke(nameof(resetAttack), timeBetweenAttacks);
+                Invoke(nameof(ResetAttack), timeBetweenAttacks);
             }
         }
     }
 
-    private void resetAttack()
+    private void ResetAttack()
     {
         alreadyAttacked = false;
     }
 
-    public void dead()
+    public void Dead()
     {
         globExplode = Instantiate(globExplodeEffect, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)) as GameObject;
         Destroy(globExplode, killTime);
@@ -92,6 +103,7 @@ public class EnemyAI : MonoBehaviour
         StartCoroutine(SpawnCountdown());
     }
 
+    // Spawning 2 seeds for duplication effect
     IEnumerator SpawnCountdown()
     {
         yield return new WaitForSeconds(2);

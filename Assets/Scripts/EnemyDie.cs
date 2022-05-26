@@ -5,9 +5,11 @@ using UnityEngine;
 public class EnemyDie : MonoBehaviour
 {
     public new GameObject gameObject;
+    float killCount = 0;
 
-    public void die()
+    public void Die()
     {
-        gameObject.GetComponent<EnemyAI>().dead();
+        gameObject.GetComponent<EnemyAI>().Dead();
+        killCount += 1;
     }
 }

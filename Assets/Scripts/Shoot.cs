@@ -6,7 +6,10 @@ using TMPro;
 
 public class Shoot : MonoBehaviour
 {
+    public TextMeshProUGUI ammoText;
+
     public static Shoot singleton;
+
     Animator anim;
 
     public FirstPersonController firstPersonController;
@@ -28,13 +31,13 @@ public class Shoot : MonoBehaviour
     public AudioSource foleyAS;
     public AudioClip shootAC;
     public AudioClip reloadAC;
-    public AudioClip emptyAC;
+    public AudioClip gunEmptyAC;
     public AudioSource impactSoundsAS;
     public AudioClip gunDefaultImpactAC;
     public AudioClip gunBloodImpactAC;
 
-    public int currentAmmo = 10;
-    public bool isReloading;
+    int ammo = 10;
+    bool isReloading;
     
     void Awake()
     {
@@ -46,11 +49,11 @@ public class Shoot : MonoBehaviour
     {
         _shootTimer -= Time.deltaTime;
 
-        if(Input.GetButton("Fire1") && currentAmmo > 0 && !isReloading)
+        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading)
         {
             ArmedInput();
         }
-        else if(Input.GetKeyDown(KeyCode.R) && currentAmmo >= 0 && currentAmmo != 10 && !isReloading)
+        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading)
         {
             Reload();
             foleyAS.clip = reloadAC;
@@ -58,14 +61,16 @@ public class Shoot : MonoBehaviour
             foleyAS.volume = Random.Range(0.7f, 0.8f);
             foleyAS.Play();
         }
-        else if(Input.GetButton("Fire1") && currentAmmo <= 0 && !isReloading && _shootTimer <= 0)
+        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0)
         {
-            foleyAS.clip = emptyAC;
+            foleyAS.clip = gunEmptyAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);
             foleyAS.volume = Random.Range(0.7f, 0.8f);
             foleyAS.Play();
             _shootTimer = shootTimer;
         }
+
+        ammoText.text = ammo.ToString();
     }
 
     public void Reload()
@@ -86,7 +91,7 @@ public class Shoot : MonoBehaviour
         if(timer <= 0f)
         {
             isReloading = false;
-            currentAmmo = 10;
+            ammo = 10;
         }
     }
 
@@ -104,7 +109,7 @@ public class Shoot : MonoBehaviour
             flash = Instantiate(flashEffect, rayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, rayPoint.transform.position)) as GameObject;
             flash.transform.parent = rayPoint.transform;
             Destroy(flash, shootTimer);
-            currentAmmo--;
+            ammo--;
             anim.SetTrigger("Shoot");
             ShootAttack();
         }
@@ -121,7 +126,7 @@ public class Shoot : MonoBehaviour
             EnemyDie enemy = hit.transform.GetComponent<EnemyDie>();
             if (enemy != null)
             {
-                enemy.die();
+                enemy.Die();
             }
 
             if(hit.rigidbody)

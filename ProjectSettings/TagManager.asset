@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Shootable
   - Enemy
+  - EnemyProjectile
   layers:
   - Default
   - TransparentFX
