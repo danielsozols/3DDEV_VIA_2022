@@ -8,6 +8,9 @@ public class Shoot : MonoBehaviour
 {
     public TextMeshProUGUI ammoText;
 
+    public TextMeshProUGUI killCountText;
+    public static float killCount;
+
     public static Shoot singleton;
 
     Animator anim;
@@ -38,24 +41,25 @@ public class Shoot : MonoBehaviour
 
     int ammo = 10;
     bool isReloading;
-
-    private static bool playerDead = PlayerHealth.isPlayerDead;
     
     void Awake()
     {
+        float killCount = 0;
         singleton = this;
         anim = GetComponent<Animator>();
     }
     
     void Update()
     {
+        killCountText.text = "GLOBS KILLED: " + killCount.ToString();
+
         _shootTimer -= Time.deltaTime;
 
-        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading && !playerDead)
+        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading && !PlayerHealth.isPlayerDead)
         {
             ArmedInput();
         }
-        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading && !playerDead)
+        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading && !PlayerHealth.isPlayerDead)
         {
             foleyAS.clip = reloadAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);
@@ -63,7 +67,7 @@ public class Shoot : MonoBehaviour
             foleyAS.Play();
             Reload();
         }
-        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0 && !playerDead)
+        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0 && !PlayerHealth.isPlayerDead)
         {
             foleyAS.clip = gunEmptyAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);

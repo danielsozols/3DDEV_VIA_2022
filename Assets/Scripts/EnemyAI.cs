@@ -35,6 +35,7 @@ public class EnemyAI : MonoBehaviour
     public GameObject newEnemy;
     GameObject globInflate;
     public GameObject sphere;
+    
 
     private void Awake()
     {
@@ -80,7 +81,7 @@ public class EnemyAI : MonoBehaviour
                 enemyAS.Play();
                 Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
                 ball.tag = "EnemyProjectile";
-                ball.AddForce(transform.forward * 50f, ForceMode.Impulse);
+                ball.AddForce(transform.forward * 30f, ForceMode.Impulse);
                 ball.AddForce(transform.up * 2f, ForceMode.Impulse);
                 fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
                 fire.transform.parent = ball.transform;
@@ -113,6 +114,7 @@ public class EnemyAI : MonoBehaviour
             GetComponent<Animator>().enabled = false;
             StartCoroutine(SpawnCountdown());
             enemy.tag = "IgnoreRaycast";
+            Shoot.killCount += 1;
         }
     }
 
