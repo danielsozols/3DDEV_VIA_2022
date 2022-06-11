@@ -9,7 +9,7 @@ public class EnemyDie : MonoBehaviour
 
     public void Die()
     {
-        gameObject.GetComponent<EnemyAI>().Dead();
         killCount += 1;
+        gameObject.GetComponent<EnemyAI>().Dead();
     }
 }

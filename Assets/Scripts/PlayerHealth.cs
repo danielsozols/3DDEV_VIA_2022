@@ -11,8 +11,8 @@ public class PlayerHealth : MonoBehaviour
     float currentHealth;
     public float maxHealth = 10;
     public float damageAmount;
-    // bool isTakingDamage = false;
-    // bool isPlayerDead = false;
+    public static bool isPlayerDead = false;
+    public static bool isTakingDamage = false;
     float lerpSpeed;
 
     private void Start()
@@ -43,7 +43,6 @@ public class PlayerHealth : MonoBehaviour
     {
         if (other.tag == "EnemyProjectile")
         {
-            //Debug.Log("Hello");
             PlayerDamage();
         }
     }
@@ -54,12 +53,12 @@ public class PlayerHealth : MonoBehaviour
         {
             if(damageAmount >= currentHealth)
             {
-                //isTakingDamage = true;
+                isTakingDamage = true;
                 PlayerDead();
             }
             else
             {
-                //isTakingDamage = true;
+                isTakingDamage = true;
                 currentHealth -= damageAmount;
             }
         }
@@ -68,8 +67,9 @@ public class PlayerHealth : MonoBehaviour
     void PlayerDead()
     {
         currentHealth = 0;
-        //isPlayerDead = true;
+        isPlayerDead = true;
         Time.timeScale = 0f;
+        //Debug.Log(isPlayerDead);
         //GameOver.GameOverMessage();
     }
 }

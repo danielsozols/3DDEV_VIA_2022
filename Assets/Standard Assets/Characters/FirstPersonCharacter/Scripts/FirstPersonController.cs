@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 #pragma warning disable 618, 649
 namespace UnityStandardAssets.Characters.FirstPerson
@@ -43,6 +44,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_Jumping;
         private AudioSource m_AudioSource;
 
+        public float stamina;
+        float maxStamina; 
+        public Slider staminaBar;
+        public Image staminaBarFill;
+        public float dValue;
+
         // Use this for initialization
         private void Start()
         {
@@ -56,6 +63,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+            maxStamina = stamina;
+            staminaBar.maxValue = maxStamina;
         }
 
 
@@ -82,6 +92,45 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
+
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                DecreaseStamina();
+            }
+            else if (stamina != maxStamina)
+            {
+                IncreaseStamina();
+            }
+
+            staminaBar.value = stamina;
+            //staminaBarFill.color = Color.Lerp(Color.red, Color.yellow, staminaBar.value / maxStamina);
+            
+            if (stamina <= (maxStamina/3))
+            {
+                staminaBarFill.color = Color.red;
+            }
+            else if (stamina >= (maxStamina/3))
+            {
+                staminaBarFill.color = Color.yellow;
+            }
+        }
+
+
+        private void DecreaseStamina()
+        {
+            if (stamina >= 0)
+            {
+                stamina -= dValue * Time.deltaTime;
+            }
+        }
+        
+
+        private void IncreaseStamina()
+        {
+            if (stamina < maxStamina)
+            {
+                stamina += dValue * Time.deltaTime;
+            }
         }
 
 
@@ -214,9 +263,19 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // On standalone builds, walk/run speed is modified by a key press.
             // keep track of whether or not the character is walking or running
             m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
+            speed = m_WalkSpeed;
+
+            if(Input.GetKey(KeyCode.LeftShift) && stamina<(maxStamina/3))
+            {
+                speed = m_WalkSpeed;
+            }
+            else if(Input.GetKey(KeyCode.LeftShift) && stamina>(maxStamina/3))
+            {
+                speed = m_RunSpeed;
+            }
 #endif
             // set the desired speed to be walking or running
-            speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
+            //speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
             m_Input = new Vector2(horizontal, vertical);
 
             // normalize input if it exceeds 1 in combined length:

@@ -16,6 +16,7 @@ public class EnemyAI : MonoBehaviour
     public GameObject projectile;
     public Transform fireBallRayPoint;
     public Transform spawnRayPoint;
+    public Transform sphereRayPoint;
     public LayerMask isGround, isPlayer;
 
     public float timeBetweenAttacks;
@@ -32,12 +33,18 @@ public class EnemyAI : MonoBehaviour
     public GameObject goopEffect;
     GameObject spawnPoint;
     public GameObject newEnemy;
+    GameObject globInflate;
+    public GameObject sphere;
 
     private void Awake()
     {
+        enemy.tag = "Enemy";
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        isDead = false;
+        enemy.GetComponentInChildren<Collider>().enabled = true;
+        enemy.GetComponentInChildren<Renderer>().enabled = true;
     }
 
     private void Update()
@@ -73,8 +80,8 @@ public class EnemyAI : MonoBehaviour
                 enemyAS.Play();
                 Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
                 ball.tag = "EnemyProjectile";
-                ball.AddForce(transform.forward * 30f, ForceMode.Impulse);
-                ball.AddForce(transform.up * 1f, ForceMode.Impulse);
+                ball.AddForce(transform.forward * 50f, ForceMode.Impulse);
+                ball.AddForce(transform.up * 2f, ForceMode.Impulse);
                 fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
                 fire.transform.parent = ball.transform;
                 Destroy(ball.gameObject, timeBetweenAttacks);
@@ -92,22 +99,32 @@ public class EnemyAI : MonoBehaviour
 
     public void Dead()
     {
-        globExplode = Instantiate(globExplodeEffect, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)) as GameObject;
-        Destroy(globExplode, killTime);
-        Destroy(enemy, killTime);
-        // OR MAYBE this.enemy.SetActive(false);
-        isDead = true;
-        agent.SetDestination(transform.position);
-        anim.SetBool("isWalking", false);
-        GetComponent<Animator>().enabled = false;
-        StartCoroutine(SpawnCountdown());
+        if(enemy.tag != "IgnoreRaycast")
+        {
+            globExplode = Instantiate(globExplodeEffect, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)) as GameObject;
+            Destroy(globExplode, killTime);
+            globInflate = Instantiate(sphere, sphereRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)) as GameObject;
+            Destroy(globInflate, timeBetweenAttacks);
+            Destroy(enemy, killTime);
+            // OR MAYBE this.enemy.SetActive(false);
+            isDead = true;
+            agent.SetDestination(transform.position);
+            anim.SetBool("isWalking", false);
+            GetComponent<Animator>().enabled = false;
+            StartCoroutine(SpawnCountdown());
+            enemy.tag = "IgnoreRaycast";
+        }
     }
 
     // Spawning 2 seeds for duplication effect
     IEnumerator SpawnCountdown()
     {
-        yield return new WaitForSeconds(2);
         float randomForce = Random.Range(8f, 12f);
+
+        yield return new WaitForSeconds(2);
+
+        enemy.GetComponentInChildren<Collider>().enabled = false;
+        enemy.GetComponentInChildren<Renderer>().enabled = false;
 
         Rigidbody seed = Instantiate(projectile, spawnRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, spawnRayPoint.transform.position)).GetComponent<Rigidbody>();
         seed.AddForce(0, 0, randomForce, ForceMode.Impulse);
@@ -122,6 +139,7 @@ public class EnemyAI : MonoBehaviour
         goop.transform.parent = seed2.transform;
 
         yield return new WaitForSeconds(2);
+
         spawnPoint = Instantiate(newEnemy, seed.transform.position, Quaternion.FromToRotation(Vector3.forward, seed.transform.position)) as GameObject;
         Destroy(seed.gameObject, killTime);
         spawnPoint = Instantiate(newEnemy, seed2.transform.position, Quaternion.FromToRotation(Vector3.forward, seed2.transform.position)) as GameObject;

@@ -38,6 +38,8 @@ public class Shoot : MonoBehaviour
 
     int ammo = 10;
     bool isReloading;
+
+    private static bool playerDead = PlayerHealth.isPlayerDead;
     
     void Awake()
     {
@@ -49,19 +51,19 @@ public class Shoot : MonoBehaviour
     {
         _shootTimer -= Time.deltaTime;
 
-        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading)
+        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading && !playerDead)
         {
             ArmedInput();
         }
-        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading)
+        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading && !playerDead)
         {
-            Reload();
             foleyAS.clip = reloadAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);
             foleyAS.volume = Random.Range(0.7f, 0.8f);
             foleyAS.Play();
+            Reload();
         }
-        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0)
+        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0 && !playerDead)
         {
             foleyAS.clip = gunEmptyAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);
@@ -124,7 +126,7 @@ public class Shoot : MonoBehaviour
         if(Physics.Raycast(ray, out hit, shootRange, shootLayer))
         {
             EnemyDie enemy = hit.transform.GetComponent<EnemyDie>();
-            if (enemy != null)
+            if (enemy != null) 
             {
                 enemy.Die();
             }
