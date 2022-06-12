@@ -42,9 +42,10 @@ public class Shoot : MonoBehaviour
     int ammo = 10;
     bool isReloading;
     
-    void Awake()
+    void Start()
     {
-        float killCount = 0;
+        killCount = 0;
+        killCountText.text = "GLOBS KILLED: " + killCount.ToString();
         singleton = this;
         anim = GetComponent<Animator>();
     }

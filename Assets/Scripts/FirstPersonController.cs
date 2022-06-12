@@ -50,6 +50,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public Image staminaBarFill;
         public float dValue;
 
+        bool isPaused;
+
         // Use this for initialization
         private void Start()
         {
@@ -72,6 +74,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
+            isPaused = PauseScreen.isGamePaused;
+
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
@@ -296,7 +300,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void RotateView()
         {
-            m_MouseLook.LookRotation (transform, m_Camera.transform);
+            if(!isPaused)
+            {
+                m_MouseLook.LookRotation (transform, m_Camera.transform);
+            }
         }
 
 

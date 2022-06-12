@@ -81,16 +81,13 @@ public class EnemyAI : MonoBehaviour
                 enemyAS.pitch = Random.Range(1f, 2f);
                 enemyAS.volume = Random.Range(0.2f, 0.3f);
                 enemyAS.Play();
-                float randomForce = Random.Range(8f, 12f);
+                float randomForce = Random.Range(6f, 12f);
                 Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
                 ball.tag = "EnemyProjectile";
                 ball.AddForce(transform.forward * 30f, ForceMode.Impulse);
                 ball.AddForce(transform.up * randomForce, ForceMode.Impulse);
                 fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
                 fire.transform.parent = ball.transform;
-                // fire.GetComponent<Renderer>().sortingLayerName = "Enemy";
-                // ball.GetComponent<Renderer>().sortingLayerName = "Enemy";
-                // fireEffect.GetComponent<Renderer>().sortingLayerName = "Enemy";
                 Destroy(ball.gameObject, timeBetweenAttacks);
 
                 alreadyAttacked = true;
@@ -106,12 +103,9 @@ public class EnemyAI : MonoBehaviour
                 Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
                 ball.tag = "EnemyProjectile";
                 ball.AddForce(transform.forward * 30f, ForceMode.Impulse);
-                ball.AddForce(transform.up * 2f, ForceMode.Impulse);
+                ball.AddForce(transform.up * 3f, ForceMode.Impulse);
                 fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
                 fire.transform.parent = ball.transform;
-                // fire.GetComponent<Renderer>().sortingLayerName = "Enemy";
-                // ball.GetComponent<Renderer>().sortingLayerName = "Enemy";
-                // fireEffect.GetComponent<Renderer>().sortingLayerName = "Enemy";
                 Destroy(ball.gameObject, timeBetweenAttacks);
 
                 alreadyAttacked = true;

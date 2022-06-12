@@ -8,6 +8,9 @@ public class PlayerHealth : MonoBehaviour
 {
     public Image healthBar;
 
+    public GameObject screen;
+    private DeathScreen deathScreen;
+
     float currentHealth;
     public float maxHealth = 10;
     public float damageAmount;
@@ -17,6 +20,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
+        isPlayerDead = false;
+        deathScreen = screen.GetComponent<DeathScreen>();
         currentHealth = maxHealth;
     }
 
@@ -68,8 +73,6 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = 0;
         isPlayerDead = true;
-        Time.timeScale = 0f;
-        //Debug.Log(isPlayerDead);
-        //GameOver.GameOverMessage();
+        deathScreen.GameOverMessage();
     }
 }
