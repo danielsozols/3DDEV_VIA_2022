@@ -12,6 +12,8 @@ public class EnemyAI : MonoBehaviour
 
     public NavMeshAgent agent;
     public Transform player; 
+    float playerPos;
+    float enemyPos; 
     public GameObject enemy;
     public GameObject projectile;
     public Transform fireBallRayPoint;
@@ -35,7 +37,6 @@ public class EnemyAI : MonoBehaviour
     public GameObject newEnemy;
     GameObject globInflate;
     public GameObject sphere;
-    
 
     private void Awake()
     {
@@ -70,14 +71,37 @@ public class EnemyAI : MonoBehaviour
             anim.SetBool("isWalking", false);
             agent.SetDestination(transform.position);
             Vector3 playerPosition = new Vector3 (player.transform.position.x, transform.position.y, player.transform.position.z);
+            enemyPos = this.transform.position.y;
+            playerPos = player.transform.position.y;
             transform.LookAt(playerPosition);
 
+            if(!alreadyAttacked && (playerPos - 2) > enemyPos)
+            {
+                enemyAS.clip = projectileAC;
+                enemyAS.pitch = Random.Range(1f, 2f);
+                enemyAS.volume = Random.Range(0.2f, 0.3f);
+                enemyAS.Play();
+                float randomForce = Random.Range(8f, 12f);
+                Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
+                ball.tag = "EnemyProjectile";
+                ball.AddForce(transform.forward * 30f, ForceMode.Impulse);
+                ball.AddForce(transform.up * randomForce, ForceMode.Impulse);
+                fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
+                fire.transform.parent = ball.transform;
+                // fire.GetComponent<Renderer>().sortingLayerName = "Enemy";
+                // ball.GetComponent<Renderer>().sortingLayerName = "Enemy";
+                // fireEffect.GetComponent<Renderer>().sortingLayerName = "Enemy";
+                Destroy(ball.gameObject, timeBetweenAttacks);
+
+                alreadyAttacked = true;
+                Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            }
 
             if (!alreadyAttacked)
             {
                 enemyAS.clip = projectileAC;
                 enemyAS.pitch = Random.Range(1f, 2f);
-                enemyAS.volume = Random.Range(0.3f, 0.4f);
+                enemyAS.volume = Random.Range(0.2f, 0.3f);
                 enemyAS.Play();
                 Rigidbody ball = Instantiate(projectile, fireBallRayPoint.transform.position, Quaternion.FromToRotation(Vector3.forward, fireBallRayPoint.transform.position)).GetComponent<Rigidbody>();
                 ball.tag = "EnemyProjectile";
@@ -85,6 +109,9 @@ public class EnemyAI : MonoBehaviour
                 ball.AddForce(transform.up * 2f, ForceMode.Impulse);
                 fire = Instantiate(fireEffect, ball.transform.position, Quaternion.FromToRotation(Vector3.forward, ball.transform.position)) as GameObject;
                 fire.transform.parent = ball.transform;
+                // fire.GetComponent<Renderer>().sortingLayerName = "Enemy";
+                // ball.GetComponent<Renderer>().sortingLayerName = "Enemy";
+                // fireEffect.GetComponent<Renderer>().sortingLayerName = "Enemy";
                 Destroy(ball.gameObject, timeBetweenAttacks);
 
                 alreadyAttacked = true;
