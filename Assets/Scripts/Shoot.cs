@@ -56,11 +56,11 @@ public class Shoot : MonoBehaviour
 
         _shootTimer -= Time.deltaTime;
 
-        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading && !PlayerHealth.isPlayerDead)
+        if(Input.GetButton("Fire1") && ammo > 0 && !isReloading && !PlayerHealth.isPlayerDead && !PauseScreen.isGamePaused)
         {
             ArmedInput();
         }
-        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading && !PlayerHealth.isPlayerDead)
+        else if(Input.GetKeyDown(KeyCode.R) && ammo >= 0 && ammo != 10 && !isReloading && !PlayerHealth.isPlayerDead && !PauseScreen.isGamePaused)
         {
             foleyAS.clip = reloadAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);
@@ -68,7 +68,7 @@ public class Shoot : MonoBehaviour
             foleyAS.Play();
             Reload();
         }
-        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0 && !PlayerHealth.isPlayerDead)
+        else if(Input.GetButton("Fire1") && ammo <= 0 && !isReloading && _shootTimer <= 0 && !PlayerHealth.isPlayerDead && !PauseScreen.isGamePaused)
         {
             foleyAS.clip = gunEmptyAC;
             foleyAS.pitch = Random.Range(0.9f, 1f);

@@ -300,10 +300,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void RotateView()
         {
-            if(!isPaused)
-            {
-                m_MouseLook.LookRotation (transform, m_Camera.transform);
-            }
+            m_MouseLook.LookRotation (transform, m_Camera.transform);
         }
 
 

@@ -6,13 +6,18 @@ using UnityEngine.UI;
 
 public class DeathScreen : MonoBehaviour
 {
-    public static bool playerIsDead = false;
+    public static bool playerIsDead;
 
     public GameObject DeathMenu;
     public GameObject CanvasCam;
 
     public Text scoreText;
     float score = Shoot.killCount;
+
+    private void Start()
+    {
+        playerIsDead = false;
+    }
 
     private void Update()
     {
@@ -30,7 +35,7 @@ public class DeathScreen : MonoBehaviour
     }
     public void RespawnPlayer()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("MainScene");
         playerIsDead = false;
         Time.timeScale = 1f;
     }

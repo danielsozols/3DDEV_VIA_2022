@@ -43,7 +43,7 @@ public class PauseScreen : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("MainScene");
         Time.timeScale = 1f;
         isGamePaused = false;
     }
